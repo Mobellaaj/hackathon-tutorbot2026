@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Knowunity Agent Olympics - Student Catalog</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+        
+        header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        header h1 {
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+        
+        header p {
+            opacity: 0.9;
+            font-size: 14px;
+        }
+        
+        .content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            padding: 30px;
+            min-height: 500px;
+        }
+        
+        .selection-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        .section {
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 20px;
+        }
+        
+        .section h2 {
+            font-size: 18px;
+            margin-bottom: 15px;
+            color: #333;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 10px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #555;
+            font-size: 14px;
+        }
+        
+        select, button {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 500;
+        }
+        
+        select {
+            background: white;
+            cursor: pointer;
+        }
+        
+        select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        
+        button {
+            background: #667eea;
+            color: white;
+            border: none;
+            cursor: pointer;
+            transition: background 0.2s;
+            font-weight: 600;
+        }
+        
+        button:hover {
+            background: #5568d3;
+        }
+        
+        button:active {
+            background: #4557c2;
+        }
+        
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+        
+        .list-container {
+            max-height: 350px;
+            overflow-y: auto;
+            border: 1px solid #e0e0e0;
+            border-radius: 6px;
+            background: #f9f9f9;
+        }
+        
+        .list-item {
+            padding: 12px;
+            border-bottom: 1px solid #f0f0f0;
+            cursor: pointer;
+            transition: background 0.2s;
+            user-select: none;
+        }
+        
+        .list-item:last-child {
+            border-bottom: none;
+        }
+        
+        .list-item:hover {
+            background: #f0f0f0;
+        }
+        
+        .list-item.selected {
+            background: #667eea;
+            color: white;
+        }
+        
+        .list-item-name {
+            font-weight: 500;
+            margin-bottom: 4px;
+        }
+        
+        .list-item-meta {
+            font-size: 12px;
+            opacity: 0.7;
+        }
+        
+        .list-item.selected .list-item-meta {
+            opacity: 0.9;
+        }
+        
+        .info-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        .status-box {
+            background: #f0f4ff;
+            border: 1px solid #d0deff;
+            border-radius: 8px;
+            padding: 15px;
+            border-left: 4px solid #667eea;
+        }
+        
+        .status-box.error {
+            background: #fff5f5;
+            border-color: #ffd7d7;
+            border-left-color: #ff6b6b;
+        }
+        
+        .status-label {
+            font-size: 12px;
+            font-weight: 600;
+            color: #666;
+            text-transform: uppercase;
+            margin-bottom: 5px;
+        }
+        
+        .status-value {
+            font-size: 14px;
+            color: #333;
+            word-break: break-word;
+        }
+        
+        .status-box.error .status-value {
+            color: #c92a2a;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 40px 20px;
+            color: #666;
+        }
+        
+        .spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-right: 10px;
+            vertical-align: middle;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: #999;
+            font-size: 14px;
+        }
+        
+        @media (max-width: 768px) {
+            .content {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Knowunity Agent Olympics</h1>
+            <p>Student Catalog - Select a student and topic</p>
+        </header>
+        
+        <div class="content">
+            <div class="selection-panel">
+                <div class="section">
+                    <label for="setType">Student Set:</label>
+                    <select id="setType">
+                        <option value="mini_dev">mini_dev</option>
+                        <option value="dev">dev</option>
+                        <option value="eval">eval</option>
+                    </select>
+                </div>
+                
+                <button id="loadStudentsBtn" onclick="loadStudents()">Load Students</button>
+                
+                <button id="startChatBtn" onclick="startChat()" disabled style="background: #999; cursor: not-allowed;">Start Chat</button>
+                    <h2>Students</h2>
+                    <div id="studentsList" class="list-container">
+                        <div class="empty-state">Select a set and click "Load Students"</div>
+                    </div>
+                </div>
+                
+                <div class="section">
+                    <h2>Topics</h2>
+                    <div id="topicsList" class="list-container">
+                        <div class="empty-state">Select a student to view topics</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="info-panel">
+                <div class="section">
+                    <h2>Selected Student</h2>
+                    <div id="selectedStudentBox" class="status-box">
+                        <div class="status-label">Name</div>
+                        <div class="status-value" id="studentNameDisplay">None</div>
+                        <div class="status-label" style="margin-top: 10px;">ID</div>
+                        <div class="status-value" id="studentIdDisplay">—</div>
+                        <div class="status-label" style="margin-top: 10px;">Grade</div>
+                        <div class="status-value" id="studentGradeDisplay">—</div>
+                    </div>
+                </div>
+                
+                <div class="section">
+                    <h2>Selected Topic</h2>
+                    <div id="selectedTopicBox" class="status-box">
+                        <div class="status-label">Subject</div>
+                        <div class="status-value" id="topicSubjectDisplay">None</div>
+                        <div class="status-label" style="margin-top: 10px;">Topic</div>
+                        <div class="status-value" id="topicNameDisplay">—</div>
+                        <div class="status-label" style="margin-top: 10px;">Grade</div>
+                        <div class="status-value" id="topicGradeDisplay">—</div>
+                        <div class="status-label" style="margin-top: 10px;">ID</div>
+                        <div class="status-value" id="topicIdDisplay">—</div>
+                    </div>
+                </div>
+                
+                <div id="errorBox" style="display: none;" class="section status-box error">
+                    <div class="status-label">Error</div>
+                    <div class="status-value" id="errorMessage"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        let selectedStudent = null;
+        let selectedTopic = null;
+        
+        // Event delegation for student and topic clicks
+        document.addEventListener("click", (e) => {
+            const studentEl = e.target.closest("#studentsList .list-item");
+            if (studentEl) {
+                const student = {
+                    id: studentEl.dataset.studentId,
+                    name: studentEl.dataset.studentName,
+                    grade_level: Number(studentEl.dataset.studentGrade)
+                };
+                console.log("Selected student:", student);
+                selectStudent(student);
+                return;
+            }
+
+            const topicEl = e.target.closest("#topicsList .list-item");
+            if (topicEl) {
+                const topic = {
+                    id: topicEl.dataset.topicId,
+                    subject_name: topicEl.dataset.topicSubject,
+                    name: topicEl.dataset.topicName,
+                    grade_level: Number(topicEl.dataset.topicGrade)
+                };
+                console.log("Selected topic:", topic);
+                selectTopic(topic);
+            }
+        });
+        
+        async function loadStudents() {
+            const setType = document.getElementById("setType").value;
+            const studentsList = document.getElementById("studentsList");
+            const btn = document.getElementById("loadStudentsBtn");
+            
+            // Clear topics when loading new students
+            selectedStudent = null;
+            selectedTopic = null;
+            updateUI();
+            
+            btn.disabled = true;
+            studentsList.innerHTML = '<div class="loading"><span class="spinner"></span>Loading...</div>';
+            
+            try {
+                const response = await fetch(`/api/students?set_type=${encodeURIComponent(setType)}`);
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+                const data = await response.json();
+                
+                if (!data.students || !Array.isArray(data.students)) {
+                    throw new Error("Invalid response format");
+                }
+                
+                if (data.students.length === 0) {
+                    studentsList.innerHTML = '<div class="empty-state">No students found</div>';
+                    clearError();
+                } else {
+                    studentsList.innerHTML = data.students.map(student => `
+                        <div class="list-item"
+                             data-student-id="${escapeHtml(student.id)}"
+                             data-student-name="${escapeHtml(student.name)}"
+                             data-student-grade="${student.grade_level}">
+                            <div class="list-item-name">${escapeHtml(student.name)}</div>
+                            <div class="list-item-meta">Grade ${student.grade_level} • ID: ${escapeHtml(student.id)}</div>
+                        </div>
+                    `).join('');
+                    clearError();
+                }
+            } catch (error) {
+                studentsList.innerHTML = '<div class="empty-state">Failed to load students</div>';
+                showError(`Failed to load students: ${error.message}`);
+            } finally {
+                btn.disabled = false;
+            }
+        }
+        
+        async function selectStudent(student) {
+            selectedStudent = student;
+            selectedTopic = null;
+            updateUI();
+            
+            const topicsList = document.getElementById("topicsList");
+            topicsList.innerHTML = '<div class="loading"><span class="spinner"></span>Loading...</div>';
+            
+            try {
+                const response = await fetch(`/api/topics/${encodeURIComponent(student.id)}`);
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+                const data = await response.json();
+                
+                if (!data.topics || !Array.isArray(data.topics)) {
+                    throw new Error("Invalid response format");
+                }
+                
+                if (data.topics.length === 0) {
+                    topicsList.innerHTML = '<div class="empty-state">No topics found</div>';
+                    clearError();
+                } else {
+                    topicsList.innerHTML = data.topics.map(topic => `
+                        <div class="list-item"
+                             data-topic-id="${escapeHtml(topic.id)}"
+                             data-topic-subject="${escapeHtml(topic.subject_name)}"
+                             data-topic-name="${escapeHtml(topic.name)}"
+                             data-topic-grade="${topic.grade_level}">
+                            <div class="list-item-name">${escapeHtml(topic.subject_name)} • ${escapeHtml(topic.name)}</div>
+                            <div class="list-item-meta">Grade ${topic.grade_level} • ID: ${escapeHtml(topic.id)}</div>
+                        </div>
+                    `).join('');
+                    clearError();
+                }
+            } catch (error) {
+                topicsList.innerHTML = '<div class="empty-state">Failed to load topics</div>';
+                showError(`Failed to load topics: ${error.message}`);
+            }
+        }
+        
+        function selectTopic(topic) {
+            selectedTopic = topic;
+            updateUI();
+            clearError();
+        }
+        
+        function updateUI() {
+            // Update students list highlighting
+            document.querySelectorAll("#studentsList .list-item").forEach(item => {
+                item.classList.remove("selected");
+            });
+            if (selectedStudent) {
+                const studentItem = document.querySelector(`#studentsList .list-item[data-student-id="${selectedStudent.id}"]`);
+                if (studentItem) {
+                    studentItem.classList.add("selected");
+                }
+            }
+            
+            // Update topics list highlighting
+            document.querySelectorAll("#topicsList .list-item").forEach(item => {
+                item.classList.remove("selected");
+            });
+            if (selectedTopic) {
+                const topicItem = document.querySelector(`#topicsList .list-item[data-topic-id="${selectedTopic.id}"]`);
+                if (topicItem) {
+                    topicItem.classList.add("selected");
+                }
+            }
+            
+            // Update selected student display
+            if (selectedStudent) {
+                document.getElementById("studentNameDisplay").textContent = selectedStudent.name;
+                document.getElementById("studentIdDisplay").textContent = selectedStudent.id;
+                document.getElementById("studentGradeDisplay").textContent = selectedStudent.grade_level;
+            } else {
+                document.getElementById("studentNameDisplay").textContent = "None";
+                document.getElementById("studentIdDisplay").textContent = "—";
+                document.getElementById("studentGradeDisplay").textContent = "—";
+            }
+            
+            // Update selected topic display
+            if (selectedTopic) {
+                document.getElementById("topicSubjectDisplay").textContent = selectedTopic.subject_name;
+                document.getElementById("topicNameDisplay").textContent = selectedTopic.name;
+                document.getElementById("topicGradeDisplay").textContent = selectedTopic.grade_level;
+                document.getElementById("topicIdDisplay").textContent = selectedTopic.id;
+            } else {
+                document.getElementById("topicSubjectDisplay").textContent = "None";
+                document.getElementById("topicNameDisplay").textContent = "—";
+                document.getElementById("topicGradeDisplay").textContent = "—";
+                document.getElementById("topicIdDisplay").textContent = "—";
+            }
+            
+            // Enable/disable Start Chat button
+            const startChatBtn = document.getElementById("startChatBtn");
+            if (selectedStudent && selectedTopic) {
+                startChatBtn.disabled = false;
+                startChatBtn.style.background = "#667eea";
+                startChatBtn.style.cursor = "pointer";
+                startChatBtn.style.opacity = "1";
+            } else {
+                startChatBtn.disabled = true;
+                startChatBtn.style.background = "#999";
+                startChatBtn.style.cursor = "not-allowed";
+                startChatBtn.style.opacity = "0.6";
+            }
+        }
+        
+        async function startChat() {
+            if (!selectedStudent || !selectedTopic) {
+                alert("Please select both a student and a topic first.");
+                return;
+            }
+            
+            const btn = document.getElementById("startChatBtn");
+            btn.disabled = true;
+            
+            try {
+                const response = await fetch("/api/conversation/start", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        student_id: selectedStudent.id,
+                        topic_id: selectedTopic.id,
+                        subject_name: selectedTopic.subject_name,
+                        topic_name: selectedTopic.name
+                    })
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+                
+                const data = await response.json();
+                const conversationId = data.conversation_id;
+                const maxTurns = data.max_turns;
+                
+                // Redirect to chat page with all necessary params
+                const chatUrl = `/chat?` +
+                    `conversation_id=${encodeURIComponent(conversationId)}&` +
+                    `max_turns=${maxTurns}&` +
+                    `subject_name=${encodeURIComponent(selectedTopic.subject_name)}&` +
+                    `topic_name=${encodeURIComponent(selectedTopic.name)}&` +
+                    `student_id=${encodeURIComponent(selectedStudent.id)}&` +
+                    `topic_id=${encodeURIComponent(selectedTopic.id)}`;
+                window.location.href = chatUrl;
+            } catch (error) {
+                showError(`Failed to start conversation: ${error.message}`);
+                btn.disabled = false;
+            }
+        }
+        
+        function showError(message) {
+            const errorBox = document.getElementById("errorBox");
+            const errorMessage = document.getElementById("errorMessage");
+            errorMessage.textContent = message;
+            errorBox.style.display = "block";
+        }
+        
+        function clearError() {
+            document.getElementById("errorBox").style.display = "none";
+        }
+        
+        function escapeHtml(text) {
+            const div = document.createElement("div");
+            div.textContent = text;
+            return div.innerHTML;
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Knowunity Agent Olympics - Chat</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            height: 90vh;
+        }
+        
+        header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            text-align: center;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+        }
+        
+        header h1 {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+        
+        .header-info {
+            font-size: 13px;
+            opacity: 0.9;
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+        }
+        
+        .message-log {
+            flex: 1;
+            overflow-y: auto;
+            overflow-x: hidden;
+            padding: 20px;
+            background: #f9f9f9;
+            word-wrap: break-word;
+        }
+        
+        .message {
+            margin-bottom: 15px;
+            animation: fadeIn 0.3s ease-in;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .message.tutor {
+            text-align: right;
+        }
+        
+        .message-bubble {
+            display: inline-block;
+            max-width: 80%;
+            padding: 12px 16px;
+            border-radius: 12px;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+            white-space: pre-wrap;
+            font-size: 14px;
+            line-height: 1.4;
+            height: auto;
+            overflow: visible;
+        }
+        
+        .message.tutor .message-bubble {
+            background: #667eea;
+            color: white;
+            border-bottom-right-radius: 4px;
+        }
+        
+        .message.student .message-bubble {
+            background: #e0e0e0;
+            color: #333;
+            border-bottom-left-radius: 4px;
+            text-align: left;
+        }
+        
+        .message-label {
+            font-size: 12px;
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: #666;
+            text-transform: uppercase;
+        }
+        
+        .message.tutor .message-label {
+            text-align: right;
+        }
+        
+        .message.student .message-label {
+            text-align: left;
+        }
+        
+        .input-area {
+            padding: 20px;
+            border-top: 1px solid #e0e0e0;
+            background: white;
+        }
+        
+        .input-wrapper {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .button-group {
+            display: flex;
+            gap: 10px;
+            flex-direction: column;
+        }
+        
+        .button-row {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .button-row > button {
+            flex: 1;
+        }
+        
+        textarea {
+            flex: 1;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-family: inherit;
+            font-size: 14px;
+            resize: none;
+            min-height: 60px;
+            max-height: 120px;
+        }
+        
+        textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        
+        textarea:disabled {
+            background: #f5f5f5;
+            color: #999;
+        }
+        
+        button {
+            padding: 12px 24px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 14px;
+            transition: background 0.2s;
+        }
+        
+        button:hover:not(:disabled) {
+            background: #5568d3;
+        }
+        
+        button:active:not(:disabled) {
+            background: #4557c2;
+        }
+        
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+        
+        button.secondary {
+            background: #764ba2;
+        }
+        
+        button.secondary:hover:not(:disabled) {
+            background: #664a91;
+        }
+        
+        .auto-tutor-badge {
+            display: inline-block;
+            background: #f0f4ff;
+            border: 1px solid #d0deff;
+            border-radius: 4px;
+            padding: 6px 10px;
+            font-size: 11px;
+            color: #667eea;
+            font-weight: 600;
+            margin-top: 8px;
+            text-align: center;
+        }
+        
+        .assessment-panel {
+            background: linear-gradient(135deg, #f0f4ff 0%, #ede7ff 100%);
+            border: 1px solid #d0deff;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+            font-size: 13px;
+        }
+        
+        .assessment-header {
+            font-weight: 700;
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 12px;
+            text-transform: uppercase;
+        }
+        
+        .assessment-level {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 12px;
+        }
+        
+        .level-badge {
+            background: #667eea;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-weight: 700;
+            font-size: 16px;
+            min-width: 80px;
+            text-align: center;
+        }
+        
+        .confidence-bar {
+            flex: 1;
+        }
+        
+        .confidence-label {
+            font-size: 11px;
+            color: #666;
+            margin-bottom: 4px;
+        }
+        
+        .confidence-fill {
+            height: 6px;
+            background: #d0deff;
+            border-radius: 3px;
+            overflow: hidden;
+        }
+        
+        .confidence-fill-inner {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            transition: width 0.3s ease;
+        }
+        
+        .assessment-section {
+            margin-top: 10px;
+        }
+        
+        .assessment-label {
+            font-weight: 600;
+            color: #333;
+            font-size: 12px;
+            margin-bottom: 6px;
+        }
+        
+        .evidence-list, .misconceptions-list {
+            list-style: none;
+            padding-left: 0;
+        }
+        
+        .evidence-list li, .misconceptions-list li {
+            padding: 4px 0;
+            color: #555;
+            font-size: 12px;
+            padding-left: 16px;
+            position: relative;
+        }
+        
+        .evidence-list li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: #667eea;
+            font-weight: bold;
+        }
+        
+        .misconceptions-list li:before {
+            content: "⚠";
+            position: absolute;
+            left: 0;
+            color: #ff6b6b;
+        }
+        
+        .session-complete {
+            text-align: center;
+            padding: 20px;
+            background: #f0f4ff;
+            border: 1px solid #d0deff;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            color: #667eea;
+            font-weight: 600;
+        }
+        
+        .error-message {
+            background: #fff5f5;
+            border: 1px solid #ffd7d7;
+            color: #c92a2a;
+            padding: 12px;
+            border-radius: 6px;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 20px;
+            color: #999;
+            font-size: 14px;
+        }
+        
+        .spinner {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid #f3f3f3;
+            border-top: 2px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-right: 8px;
+            vertical-align: middle;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .back-link {
+            color: #667eea;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 600;
+        }
+        
+        .back-link:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Tutoring Session</h1>
+            <div class="header-info">
+                <div>Conv ID: <code id="convIdDisplay" style="font-family: monospace; font-size: 12px;"></code></div>
+                <div>Turn <span id="turnDisplay">0</span>/<span id="maxTurnsDisplay">10</span></div>
+                <div><a href="/" class="back-link">← Back to Catalog</a></div>
+            </div>
+        </header>
+        
+        <div class="message-log" id="messageLog">
+            <div class="loading"><span class="spinner"></span>Loading session...</div>
+        </div>
+        
+        <div class="input-area">
+            <div id="sessionComplete" class="session-complete" style="display: none;">
+                ✓ Session Complete — Max turns reached
+            </div>
+            <div id="errorBox" class="error-message" style="display: none;"></div>
+            
+            <!-- Live Assessment Panel -->
+            <div id="assessmentPanel" class="assessment-panel" style="display: none;">
+                <div class="assessment-header">📊 Live Assessment</div>
+                
+                <div class="assessment-level">
+                    <div class="level-badge" id="levelBadge">3/5</div>
+                    <div class="confidence-bar">
+                        <div class="confidence-label">Confidence</div>
+                        <div class="confidence-fill">
+                            <div class="confidence-fill-inner" id="confidenceFill" style="width: 20%;"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="assessment-section" id="evidenceSection" style="display: none;">
+                    <div class="assessment-label">Evidence</div>
+                    <ul class="evidence-list" id="evidenceList"></ul>
+                </div>
+                
+                <div class="assessment-section" id="misconceptionsSection" style="display: none;">
+                    <div class="assessment-label">Misconceptions</div>
+                    <ul class="misconceptions-list" id="misconceptionsList"></ul>
+                </div>
+            </div>
+            
+            <div style="text-align: center;">
+                <button id="autoTutorBtn" onclick="autoTutor()" style="padding: 14px 32px; font-size: 16px;">🤖 Auto Tutor</button>
+            </div>
+    </div>
+    
+    <script>
+        let conversationId = null;
+        let maxTurns = 10;
+        let currentTurn = 0;
+        let isComplete = false;
+        let messages = [];
+        let subjectName = "";
+        let topicName = "";
+        
+        // Parse URL parameters
+        function getQueryParam(name) {
+            const url = new URL(window.location);
+            return url.searchParams.get(name);
+        }
+        
+        // Initialize
+        async function init() {
+            conversationId = getQueryParam("conversation_id");
+            maxTurns = parseInt(getQueryParam("max_turns")) || 10;
+            subjectName = getQueryParam("subject_name") || "Subject";
+            topicName = getQueryParam("topic_name") || "Topic";
+            
+            if (!conversationId) {
+                showError("No conversation ID provided");
+                return;
+            }
+            
+            document.getElementById("convIdDisplay").textContent = conversationId.substring(0, 12) + "...";
+            document.getElementById("maxTurnsDisplay").textContent = maxTurns;
+            document.getElementById("turnDisplay").textContent = currentTurn;
+            
+            // Session started, enable auto tutor button
+            document.getElementById("autoTutorBtn").disabled = false;
+            document.getElementById("assessmentPanel").style.display = "block";
+            document.getElementById("messageLog").innerHTML = '<div style="text-align: center; padding: 20px; color: #999;">Starting automatic conversation...</div>';
+            
+            // Start automatic tutor conversation
+            setTimeout(startAutoConversation, 500);
+        }
+        
+        function updateAssessmentUI(assessment) {
+            if (!assessment) return;
+            
+            const level = assessment.predicted_level || 3;
+            const confidence = (assessment.confidence || 0) * 100;
+            const evidence = assessment.evidence || [];
+            const misconceptions = assessment.misconceptions || [];
+            
+            // Update level badge
+            document.getElementById("levelBadge").textContent = `${level}/5`;
+            
+            // Update confidence bar
+            document.getElementById("confidenceFill").style.width = confidence + "%";
+            
+            // Update evidence list
+            const evidenceSection = document.getElementById("evidenceSection");
+            const evidenceList = document.getElementById("evidenceList");
+            if (evidence && evidence.length > 0) {
+                evidenceSection.style.display = "block";
+                evidenceList.innerHTML = evidence
+                    .slice(0, 5)
+                    .map(e => `<li>${escapeHtml(e)}</li>`)
+                    .join("");
+            } else {
+                evidenceSection.style.display = "none";
+            }
+            
+            // Update misconceptions list
+            const misconceptionsSection = document.getElementById("misconceptionsSection");
+            const misconceptionsList = document.getElementById("misconceptionsList");
+            if (misconceptions && misconceptions.length > 0) {
+                misconceptionsSection.style.display = "block";
+                misconceptionsList.innerHTML = misconceptions
+                    .slice(0, 3)
+                    .map(m => `<li>${escapeHtml(m)}</li>`)
+                    .join("");
+            } else {
+                misconceptionsSection.style.display = "none";
+            }
+        }
+        
+        function buildResultsUrl() {
+            const params = new URLSearchParams({
+                conversation_id: conversationId,
+                student_id: studentId,
+                topic_id: topicId,
+                subject_name: subjectName,
+                topic_name: topicName,
+                max_turns: maxTurns
+            });
+            return `/results?${params.toString()}`;
+        }
+        
+        let isAutoRunning = false;
+        
+        async function startAutoConversation() {
+            isAutoRunning = true;
+            document.getElementById("autoTutorBtn").style.display = "none";
+            
+            while (!isComplete && currentTurn < maxTurns) {
+                await autoTutor();
+                // Wait 2 seconds between turns for readability
+                if (!isComplete && currentTurn < maxTurns) {
+                    await new Promise(resolve => setTimeout(resolve, 2000));
+                }
+            }
+        }
+        
+        async function autoTutor() {
+            if (isComplete || currentTurn >= maxTurns) {
+                if (!isAutoRunning) {
+                    alert("Session is complete");
+                }
+                return;
+            }
+            
+            const btn = document.getElementById("autoTutorBtn");
+            btn.disabled = true;
+            btn.textContent = "🤖 Generating...";
+            
+            try {
+                // Call /api/tutor/next to generate message
+                const response = await fetch("/api/tutor/next", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        conversation_id: conversationId,
+                        subject_name: subjectName,
+                        topic_name: topicName,
+                        max_turns: maxTurns
+                    })
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+                
+                const tutorData = await response.json();
+                const generatedMessage = tutorData.tutor_message;
+                
+                // Add tutor message to log
+                addMessageToLog("tutor", generatedMessage);
+                
+                // Send to Knowunity API via /api/conversation/message
+                const msgResponse = await fetch("/api/conversation/message", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        conversation_id: conversationId,
+                        tutor_message: generatedMessage
+                    })
+                });
+                
+                if (!msgResponse.ok) {
+                    throw new Error(`HTTP ${msgResponse.status}: ${msgResponse.statusText}`);
+                }
+                
+                const msgData = await msgResponse.json();
+                
+                // Add student response
+                if (msgData.student_response) {
+                    addMessageToLog("student", msgData.student_response);
+                }
+                
+                // Update turn
+                currentTurn = msgData.turn_number;
+                document.getElementById("turnDisplay").textContent = currentTurn;
+                
+                // Update assessment from response
+                if (msgData.assessment) {
+                    updateAssessmentUI(msgData.assessment);
+                }
+                
+                // Check if complete
+                if (msgData.is_complete || currentTurn >= maxTurns) {
+                    isComplete = true;
+                    btn.disabled = true;
+                    btn.textContent = "🤖 Auto Tutor";
+                    
+                    // Redirect to results page after small delay to show final message
+                    setTimeout(() => {
+                        const resultsUrl = buildResultsUrl();
+                        window.location.href = resultsUrl;
+                    }, 300);
+                    document.getElementById("sessionComplete").style.display = "block";
+                } else {
+                    btn.disabled = false;
+                    btn.textContent = "🤖 Auto Tutor";
+                }
+                
+                clearError();
+            } catch (error) {
+                addMessageToLog("error", `Error: ${error.message}`);
+                showError(`Failed: ${error.message}`);
+                btn.disabled = false;
+                btn.textContent = "🤖 Auto Tutor";
+            }
+        }
+        
+        function addMessageToLog(role, text) {
+            const messageLog = document.getElementById("messageLog");
+            
+            // Clear placeholder if exists
+            if (messageLog.textContent.includes("ready. Send")) {
+                messageLog.innerHTML = "";
+            }
+            
+            const messageDiv = document.createElement("div");
+            messageDiv.className = `message ${role}`;
+            
+            let label = role === "tutor" ? "You (Tutor)" : role === "student" ? "Student" : "Error";
+            let html = `<div class="message-label">${label}</div>`;
+            html += `<div class="message-bubble">${escapeHtml(text)}</div>`;
+            
+            messageDiv.innerHTML = html;
+            messageLog.appendChild(messageDiv);
+            
+            // Auto-scroll to bottom
+            messageLog.scrollTop = messageLog.scrollHeight;
+        }
+        
+        function showError(message) {
+            const errorBox = document.getElementById("errorBox");
+            errorBox.textContent = message;
+            errorBox.style.display = "block";
+        }
+        
+        function clearError() {
+            document.getElementById("errorBox").style.display = "none";
+        }
+        
+        function escapeHtml(text) {
+            const div = document.createElement("div");
+            div.textContent = text;
+            return div.innerHTML;
+        }
+        
+        // Start on load
+        window.addEventListener("load", init);
+    </script>
+</body>
+</html>
