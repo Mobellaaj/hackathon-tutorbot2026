@@ -12,130 +12,200 @@
         }
         
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
             min-height: 100vh;
             padding: 20px;
+            color: #fff;
         }
         
         .container {
-            max-width: 1200px;
+            max-width: 900px;
             margin: 0 auto;
-            background: white;
-            border-radius: 12px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            background: rgba(30, 30, 50, 0.8);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+            border: 1px solid rgba(255, 255, 255, 0.18);
             overflow: hidden;
         }
         
         header {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
-            padding: 30px;
+            padding: 40px 30px;
             text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -10%;
+            width: 300px;
+            height: 300px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 50%;
+            animation: float 6s ease-in-out infinite;
         }
         
         header h1 {
-            font-size: 32px;
+            font-size: 36px;
             margin-bottom: 10px;
+            font-weight: 700;
+            position: relative;
+            z-index: 1;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
         }
         
         header p {
-            opacity: 0.9;
+            opacity: 0.95;
             font-size: 14px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(20px); }
         }
         
         .content {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 30px;
-            padding: 30px;
-            min-height: 500px;
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+            padding: 0;
+            min-height: auto;
         }
         
         .selection-panel {
             display: flex;
             flex-direction: column;
-            gap: 20px;
+            gap: 0;
+            padding: 40px 30px;
         }
         
         .section {
-            border: 1px solid #e0e0e0;
-            border-radius: 8px;
-            padding: 20px;
+            border: none;
+            border-radius: 12px;
+            padding: 0;
+            margin-bottom: 30px;
+        }
+        
+        .section:last-child {
+            margin-bottom: 0;
         }
         
         .section h2 {
             font-size: 18px;
             margin-bottom: 15px;
-            color: #333;
-            border-bottom: 2px solid #667eea;
-            padding-bottom: 10px;
+            color: #fff;
+            border-bottom: none;
+            padding-bottom: 0;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #a0aec0;
+            font-size: 12px;
+            margin-bottom: 15px;
         }
         
         label {
             display: block;
-            margin-bottom: 8px;
+            margin-bottom: 15px;
             font-weight: 500;
-            color: #555;
+            color: #cbd5e0;
             font-size: 14px;
-        }
-        
-        select, button {
-            width: 100%;
-            padding: 12px;
-            border: 1px solid #ddd;
-            border-radius: 6px;
-            font-size: 14px;
-            font-weight: 500;
-        }
-        
-        select {
-            background: white;
-            cursor: pointer;
-        }
-        
-        select:focus {
-            outline: none;
-            border-color: #667eea;
-            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
         }
         
         button {
-            background: #667eea;
-            color: white;
+            width: 100%;
+            padding: 14px;
             border: none;
-            cursor: pointer;
-            transition: background 0.2s;
+            border-radius: 10px;
+            font-size: 15px;
             font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
         
-        button:hover {
-            background: #5568d3;
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
         }
         
-        button:active {
-            background: #4557c2;
+        button:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.4);
+        }
+        
+        button:active:not(:disabled) {
+            transform: translateY(0px);
         }
         
         button:disabled {
-            background: #ccc;
+            background: #4a5568;
             cursor: not-allowed;
-            opacity: 0.6;
+            opacity: 0.5;
         }
         
         .list-container {
-            max-height: 350px;
+            max-height: 300px;
             overflow-y: auto;
-            border: 1px solid #e0e0e0;
-            border-radius: 6px;
-            background: #f9f9f9;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 0;
+        }
+        
+        #setsList.list-container {
+            display: flex;
+            flex-direction: row;
+            overflow-x: auto;
+            overflow-y: hidden;
+            max-height: none;
+            padding: 8px;
+            gap: 8px;
+        }
+        
+        #setsList .list-item {
+            flex: 0 0 calc(33.333% - 6px);
+            border-bottom: none;
+            border-right: 1px solid rgba(255, 255, 255, 0.05);
+            min-height: 80px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+        
+        #setsList .list-item:last-child {
+            border-right: none;
+        }
+        
+        .list-container::-webkit-scrollbar {
+            width: 6px;
+        }
+        
+        .list-container::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+        }
+        
+        .list-container::-webkit-scrollbar-thumb {
+            background: #667eea;
+            border-radius: 3px;
         }
         
         .list-item {
-            padding: 12px;
-            border-bottom: 1px solid #f0f0f0;
+            padding: 14px 16px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
             cursor: pointer;
-            transition: background 0.2s;
+            transition: all 0.2s;
             user-select: none;
         }
         
@@ -144,77 +214,40 @@
         }
         
         .list-item:hover {
-            background: #f0f0f0;
+            background: rgba(255, 255, 255, 0.08);
         }
         
         .list-item.selected {
-            background: #667eea;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
         }
         
         .list-item-name {
             font-weight: 500;
             margin-bottom: 4px;
+            font-size: 15px;
         }
         
         .list-item-meta {
             font-size: 12px;
-            opacity: 0.7;
+            opacity: 0.6;
         }
         
         .list-item.selected .list-item-meta {
-            opacity: 0.9;
-        }
-        
-        .info-panel {
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-        }
-        
-        .status-box {
-            background: #f0f4ff;
-            border: 1px solid #d0deff;
-            border-radius: 8px;
-            padding: 15px;
-            border-left: 4px solid #667eea;
-        }
-        
-        .status-box.error {
-            background: #fff5f5;
-            border-color: #ffd7d7;
-            border-left-color: #ff6b6b;
-        }
-        
-        .status-label {
-            font-size: 12px;
-            font-weight: 600;
-            color: #666;
-            text-transform: uppercase;
-            margin-bottom: 5px;
-        }
-        
-        .status-value {
-            font-size: 14px;
-            color: #333;
-            word-break: break-word;
-        }
-        
-        .status-box.error .status-value {
-            color: #c92a2a;
+            opacity: 0.85;
         }
         
         .loading {
             text-align: center;
-            padding: 40px 20px;
-            color: #666;
+            padding: 30px 20px;
+            color: #a0aec0;
         }
         
         .spinner {
             display: inline-block;
             width: 20px;
             height: 20px;
-            border: 3px solid #f3f3f3;
+            border: 3px solid rgba(255, 255, 255, 0.1);
             border-top: 3px solid #667eea;
             border-radius: 50%;
             animation: spin 1s linear infinite;
@@ -229,15 +262,79 @@
         
         .empty-state {
             text-align: center;
-            padding: 40px 20px;
-            color: #999;
+            padding: 30px 20px;
+            color: #718096;
             font-size: 14px;
         }
         
-        @media (max-width: 768px) {
-            .content {
-                grid-template-columns: 1fr;
-            }
+        .status-box {
+            background: rgba(102, 126, 234, 0.1);
+            border: 1px solid rgba(102, 126, 234, 0.3);
+            border-radius: 12px;
+            padding: 16px;
+            border-left: 4px solid #667eea;
+        }
+        
+        .status-box.error {
+            background: rgba(255, 107, 107, 0.1);
+            border-color: rgba(255, 107, 107, 0.3);
+            border-left-color: #ff6b6b;
+        }
+        
+        .status-label {
+            font-size: 11px;
+            font-weight: 600;
+            color: #a0aec0;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+            letter-spacing: 0.5px;
+        }
+        
+        .status-value {
+            font-size: 14px;
+            color: #e2e8f0;
+            word-break: break-word;
+        }
+        
+        .status-box.error .status-value {
+            color: #ff6b6b;
+        }
+        
+        .button-group {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 30px;
+        }
+        
+        .button-group button {
+            flex: 1;
+        }
+        
+        .bottom-button {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: 20px;
+        }
+        
+        .bottom-button:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 30px rgba(102, 126, 234, 0.4);
+        }
+        
+        .bottom-button:disabled {
+            background: #4a5568;
+            cursor: not-allowed;
+            opacity: 0.5;
         }
     </style>
 </head>
@@ -245,78 +342,91 @@
     <div class="container">
         <header>
             <h1>Knowunity Agent Olympics</h1>
-            <p>Student Catalog - Select a student and topic</p>
+            <p>Intelligent Student Assessment System</p>
         </header>
         
         <div class="content">
             <div class="selection-panel">
+                <!-- Student Set Selection -->
                 <div class="section">
-                    <label for="setType">Student Set:</label>
-                    <select id="setType">
-                        <option value="mini_dev">mini_dev</option>
-                        <option value="dev">dev</option>
-                        <option value="eval">eval</option>
-                    </select>
-                </div>
-                
-                <button id="loadStudentsBtn" onclick="loadStudents()">Load Students</button>
-                
-                <button id="startChatBtn" onclick="startChat()" disabled style="background: #999; cursor: not-allowed;">Start Chat</button>
-                    <h2>Students</h2>
-                    <div id="studentsList" class="list-container">
-                        <div class="empty-state">Select a set and click "Load Students"</div>
+                    <h2>Student Set</h2>
+                    <div id="setsList" class="list-container">
+                        <div class="list-item" data-set="mini_dev">
+                            <div class="list-item-name">Mini Dev</div>
+                            <div class="list-item-meta">Development Set</div>
+                        </div>
+                        <div class="list-item" data-set="dev">
+                            <div class="list-item-name">Dev</div>
+                            <div class="list-item-meta">Development Set</div>
+                        </div>
+                        <div class="list-item" data-set="eval">
+                            <div class="list-item-name">Eval</div>
+                            <div class="list-item-meta">Evaluation Set</div>
+                        </div>
                     </div>
                 </div>
                 
+                <button id="loadStudentsBtn" onclick="loadStudents()" disabled style="margin-bottom: 30px;">Load Students</button>
+                
+                <!-- Students List -->
+                <div class="section">
+                    <h2>Students</h2>
+                    <div id="studentsList" class="list-container">
+                        <div class="empty-state">Select a student set first</div>
+                    </div>
+                </div>
+                
+                <!-- Topics List -->
                 <div class="section">
                     <h2>Topics</h2>
                     <div id="topicsList" class="list-container">
                         <div class="empty-state">Select a student to view topics</div>
                     </div>
                 </div>
-            </div>
-            
-            <div class="info-panel">
+                
+                <!-- Selected Info -->
                 <div class="section">
-                    <h2>Selected Student</h2>
-                    <div id="selectedStudentBox" class="status-box">
-                        <div class="status-label">Name</div>
+                    <h2>Selection Summary</h2>
+                    <div id="selectedStudentBox" class="status-box" style="margin-bottom: 12px;">
+                        <div class="status-label">Selected Student</div>
                         <div class="status-value" id="studentNameDisplay">None</div>
-                        <div class="status-label" style="margin-top: 10px;">ID</div>
-                        <div class="status-value" id="studentIdDisplay">—</div>
-                        <div class="status-label" style="margin-top: 10px;">Grade</div>
-                        <div class="status-value" id="studentGradeDisplay">—</div>
                     </div>
-                </div>
-                
-                <div class="section">
-                    <h2>Selected Topic</h2>
                     <div id="selectedTopicBox" class="status-box">
-                        <div class="status-label">Subject</div>
-                        <div class="status-value" id="topicSubjectDisplay">None</div>
-                        <div class="status-label" style="margin-top: 10px;">Topic</div>
-                        <div class="status-value" id="topicNameDisplay">—</div>
-                        <div class="status-label" style="margin-top: 10px;">Grade</div>
-                        <div class="status-value" id="topicGradeDisplay">—</div>
-                        <div class="status-label" style="margin-top: 10px;">ID</div>
-                        <div class="status-value" id="topicIdDisplay">—</div>
+                        <div class="status-label">Selected Topic</div>
+                        <div class="status-value" id="topicDisplayFull">None</div>
                     </div>
                 </div>
                 
-                <div id="errorBox" style="display: none;" class="section status-box error">
+                <!-- Error Box -->
+                <div id="errorBox" style="display: none;" class="section status-box error" style="margin-bottom: 20px;">
                     <div class="status-label">Error</div>
                     <div class="status-value" id="errorMessage"></div>
                 </div>
+                
+                <!-- Start Chat Button at Bottom -->
+                <button id="startChatBtn" onclick="startChat()" disabled class="bottom-button">Start Chat</button>
             </div>
         </div>
     </div>
     
     <script>
+        let selectedSet = null;
         let selectedStudent = null;
         let selectedTopic = null;
         
-        // Event delegation for student and topic clicks
+        // Handle student set selection
         document.addEventListener("click", (e) => {
+            const setItem = e.target.closest("#setsList .list-item");
+            if (setItem) {
+                selectedSet = setItem.dataset.set;
+                document.querySelectorAll("#setsList .list-item").forEach(item => {
+                    item.classList.remove("selected");
+                });
+                setItem.classList.add("selected");
+                document.getElementById("loadStudentsBtn").disabled = false;
+                return;
+            }
+            
             const studentEl = e.target.closest("#studentsList .list-item");
             if (studentEl) {
                 const student = {
@@ -343,11 +453,15 @@
         });
         
         async function loadStudents() {
-            const setType = document.getElementById("setType").value;
+            if (!selectedSet) {
+                showError("Please select a student set first");
+                return;
+            }
+            
             const studentsList = document.getElementById("studentsList");
             const btn = document.getElementById("loadStudentsBtn");
             
-            // Clear topics when loading new students
+            // Clear selections
             selectedStudent = null;
             selectedTopic = null;
             updateUI();
@@ -356,7 +470,7 @@
             studentsList.innerHTML = '<div class="loading"><span class="spinner"></span>Loading...</div>';
             
             try {
-                const response = await fetch(`/api/students?set_type=${encodeURIComponent(setType)}`);
+                const response = await fetch(`/api/students?set_type=${encodeURIComponent(selectedSet)}`);
                 if (!response.ok) {
                     throw new Error(`HTTP ${response.status}: ${response.statusText}`);
                 }
@@ -376,7 +490,7 @@
                              data-student-name="${escapeHtml(student.name)}"
                              data-student-grade="${student.grade_level}">
                             <div class="list-item-name">${escapeHtml(student.name)}</div>
-                            <div class="list-item-meta">Grade ${student.grade_level} • ID: ${escapeHtml(student.id)}</div>
+                            <div class="list-item-meta">Grade ${student.grade_level}</div>
                         </div>
                     `).join('');
                     clearError();
@@ -419,7 +533,7 @@
                              data-topic-name="${escapeHtml(topic.name)}"
                              data-topic-grade="${topic.grade_level}">
                             <div class="list-item-name">${escapeHtml(topic.subject_name)} • ${escapeHtml(topic.name)}</div>
-                            <div class="list-item-meta">Grade ${topic.grade_level} • ID: ${escapeHtml(topic.id)}</div>
+                            <div class="list-item-meta">Grade ${topic.grade_level}</div>
                         </div>
                     `).join('');
                     clearError();
@@ -459,48 +573,33 @@
                 }
             }
             
-            // Update selected student display
+            // Update selected student display (NO ID)
             if (selectedStudent) {
                 document.getElementById("studentNameDisplay").textContent = selectedStudent.name;
-                document.getElementById("studentIdDisplay").textContent = selectedStudent.id;
-                document.getElementById("studentGradeDisplay").textContent = selectedStudent.grade_level;
             } else {
                 document.getElementById("studentNameDisplay").textContent = "None";
-                document.getElementById("studentIdDisplay").textContent = "—";
-                document.getElementById("studentGradeDisplay").textContent = "—";
             }
             
-            // Update selected topic display
+            // Update selected topic display (NO ID)
             if (selectedTopic) {
-                document.getElementById("topicSubjectDisplay").textContent = selectedTopic.subject_name;
-                document.getElementById("topicNameDisplay").textContent = selectedTopic.name;
-                document.getElementById("topicGradeDisplay").textContent = selectedTopic.grade_level;
-                document.getElementById("topicIdDisplay").textContent = selectedTopic.id;
+                document.getElementById("topicDisplayFull").textContent = 
+                    `${selectedTopic.subject_name} • ${selectedTopic.name}`;
             } else {
-                document.getElementById("topicSubjectDisplay").textContent = "None";
-                document.getElementById("topicNameDisplay").textContent = "—";
-                document.getElementById("topicGradeDisplay").textContent = "—";
-                document.getElementById("topicIdDisplay").textContent = "—";
+                document.getElementById("topicDisplayFull").textContent = "None";
             }
             
             // Enable/disable Start Chat button
             const startChatBtn = document.getElementById("startChatBtn");
             if (selectedStudent && selectedTopic) {
                 startChatBtn.disabled = false;
-                startChatBtn.style.background = "#667eea";
-                startChatBtn.style.cursor = "pointer";
-                startChatBtn.style.opacity = "1";
             } else {
                 startChatBtn.disabled = true;
-                startChatBtn.style.background = "#999";
-                startChatBtn.style.cursor = "not-allowed";
-                startChatBtn.style.opacity = "0.6";
             }
         }
         
         async function startChat() {
             if (!selectedStudent || !selectedTopic) {
-                alert("Please select both a student and a topic first.");
+                showError("Please select both a student and a topic first.");
                 return;
             }
             

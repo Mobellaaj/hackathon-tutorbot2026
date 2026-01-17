@@ -4,6 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Session Results - Knowunity Agent Olympics</title>
+    
+    <!-- MathJax for LaTeX/Math formula rendering -->
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    
     <style>
         * {
             margin: 0;
@@ -322,9 +326,20 @@
             if (!resultsData) return;
             
             const finalAssessment = resultsData.final_assessment || resultsData.assessment || {};
-            const finalLevel = finalAssessment.final_level || finalAssessment.predicted_level || 3;
+            const finalLevel = finalAssessment.level || finalAssessment.final_level || finalAssessment.predicted_level || 3;
             const confidence = finalAssessment.confidence || 0.5;
-            const evidence = finalAssessment.key_evidence || finalAssessment.evidence || [];
+            
+            // Handle new evidence format: array of {quote, reason} objects
+            let evidence = finalAssessment.evidence || finalAssessment.key_evidence || [];
+            evidence = evidence.map(e => {
+                if (typeof e === 'string') {
+                    return e;  // Old format: just a string
+                } else if (typeof e === 'object' && e.quote) {
+                    return `"${e.quote}" - ${e.reason}`;  // New format: extract quote and reason
+                }
+                return "";
+            }).filter(e => e);  // Remove empty ones
+            
             const misconceptions = finalAssessment.misconceptions || [];
             const shortSummary = finalAssessment.short_summary || "";
             const history = resultsData.history || [];
@@ -408,6 +423,11 @@
             `;
             
             document.getElementById("content").innerHTML = html;
+            
+            // Rerender MathJax for any formulas in the results
+            if (window.MathJax && window.MathJax.typesetPromise) {
+                window.MathJax.typesetPromise().catch(err => console.log("MathJax render error:", err));
+            }
         }
         
         function getLevelDescription(level) {
@@ -422,7 +442,13 @@
         }
         
         function escapeHtml(text) {
-            if (!text) return "";
+            // Convert to string if it's not already (handles objects, arrays, etc.)
+            if (text === null || text === undefined) {
+                return "";
+            }
+            if (typeof text !== 'string') {
+                text = String(text);
+            }
             const map = {
                 '&': '&amp;',
                 '<': '&lt;',

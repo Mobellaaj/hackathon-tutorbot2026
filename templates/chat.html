@@ -4,6 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Knowunity Agent Olympics - Chat</title>
+    
+    <!-- MathJax for LaTeX/Math formula rendering -->
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    
     <style>
         * {
             margin: 0;
@@ -12,57 +16,116 @@
         }
         
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
             min-height: 100vh;
             padding: 20px;
+            color: #fff;
+        }
+        
+        .wrapper {
+            display: flex;
+            gap: 20px;
+            max-width: 1400px;
+            margin: 0 auto;
+            height: 90vh;
         }
         
         .container {
-            max-width: 900px;
-            margin: 0 auto;
-            background: white;
-            border-radius: 12px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            flex: 1;
+            background: rgba(30, 30, 50, 0.8);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+            border: 1px solid rgba(255, 255, 255, 0.18);
             overflow: hidden;
             display: flex;
             flex-direction: column;
-            height: 90vh;
+        }
+        
+        .side-panel {
+            width: 320px;
+            background: rgba(30, 30, 50, 0.8);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+            overflow-y: auto;
+        }
+        
+        .side-panel::-webkit-scrollbar {
+            width: 6px;
+        }
+        
+        .side-panel::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+        }
+        
+        .side-panel::-webkit-scrollbar-thumb {
+            background: #667eea;
+            border-radius: 3px;
         }
         
         header {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
-            padding: 20px;
+            padding: 25px;
             text-align: center;
-            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
         
         header h1 {
             font-size: 24px;
-            margin-bottom: 10px;
+            margin-bottom: 8px;
+            font-weight: 700;
         }
         
         .header-info {
-            font-size: 13px;
+            font-size: 12px;
             opacity: 0.9;
             display: flex;
             justify-content: center;
-            gap: 30px;
+            gap: 25px;
+            flex-wrap: wrap;
+        }
+        
+        .header-info-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
         }
         
         .message-log {
             flex: 1;
             overflow-y: auto;
             overflow-x: hidden;
-            padding: 20px;
-            background: #f9f9f9;
+            padding: 25px;
+            background: transparent;
             word-wrap: break-word;
         }
         
+        .message-log::-webkit-scrollbar {
+            width: 6px;
+        }
+        
+        .message-log::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+        }
+        
+        .message-log::-webkit-scrollbar-thumb {
+            background: #667eea;
+            border-radius: 3px;
+        }
+        
         .message {
-            margin-bottom: 15px;
+            margin-bottom: 16px;
             animation: fadeIn 0.3s ease-in;
+            display: flex;
+            gap: 12px;
+            align-items: flex-end;
         }
         
         @keyframes fadeIn {
@@ -71,198 +134,202 @@
         }
         
         .message.tutor {
-            text-align: right;
+            justify-content: flex-end;
+        }
+        
+        .message.student {
+            justify-content: flex-start;
+        }
+        
+        .message-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            flex-shrink: 0;
+        }
+        
+        .message.tutor .message-avatar {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            order: 2;
+        }
+        
+        .message.student .message-avatar {
+            background: rgba(102, 126, 234, 0.2);
+            border: 2px solid #667eea;
+        }
+        
+        .message-content {
+            flex: 0 1 70%;
         }
         
         .message-bubble {
             display: inline-block;
-            max-width: 80%;
+            max-width: 100%;
             padding: 12px 16px;
-            border-radius: 12px;
+            border-radius: 14px;
             word-wrap: break-word;
             overflow-wrap: break-word;
             white-space: pre-wrap;
             font-size: 14px;
-            line-height: 1.4;
+            line-height: 1.5;
             height: auto;
             overflow: visible;
         }
         
         .message.tutor .message-bubble {
-            background: #667eea;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
             border-bottom-right-radius: 4px;
         }
         
         .message.student .message-bubble {
-            background: #e0e0e0;
-            color: #333;
+            background: rgba(255, 255, 255, 0.08);
+            color: #e2e8f0;
             border-bottom-left-radius: 4px;
-            text-align: left;
-        }
-        
-        .message-label {
-            font-size: 12px;
-            font-weight: 600;
-            margin-bottom: 5px;
-            color: #666;
-            text-transform: uppercase;
-        }
-        
-        .message.tutor .message-label {
-            text-align: right;
-        }
-        
-        .message.student .message-label {
-            text-align: left;
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
         
         .input-area {
             padding: 20px;
-            border-top: 1px solid #e0e0e0;
-            background: white;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            background: transparent;
         }
         
-        .input-wrapper {
-            display: flex;
-            gap: 10px;
-        }
-        
-        .button-group {
-            display: flex;
-            gap: 10px;
-            flex-direction: column;
-        }
-        
-        .button-row {
-            display: flex;
-            gap: 10px;
-        }
-        
-        .button-row > button {
-            flex: 1;
-        }
-        
-        textarea {
-            flex: 1;
-            padding: 12px;
-            border: 1px solid #ddd;
-            border-radius: 6px;
-            font-family: inherit;
-            font-size: 14px;
-            resize: none;
-            min-height: 60px;
-            max-height: 120px;
-        }
-        
-        textarea:focus {
-            outline: none;
-            border-color: #667eea;
-            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-        }
-        
-        textarea:disabled {
-            background: #f5f5f5;
-            color: #999;
-        }
-        
-        button {
-            padding: 12px 24px;
-            background: #667eea;
-            color: white;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            font-weight: 600;
-            font-size: 14px;
-            transition: background 0.2s;
-        }
-        
-        button:hover:not(:disabled) {
-            background: #5568d3;
-        }
-        
-        button:active:not(:disabled) {
-            background: #4557c2;
-        }
-        
-        button:disabled {
-            background: #ccc;
-            cursor: not-allowed;
-            opacity: 0.6;
-        }
-        
-        button.secondary {
-            background: #764ba2;
-        }
-        
-        button.secondary:hover:not(:disabled) {
-            background: #664a91;
-        }
-        
-        .auto-tutor-badge {
-            display: inline-block;
-            background: #f0f4ff;
-            border: 1px solid #d0deff;
-            border-radius: 4px;
-            padding: 6px 10px;
-            font-size: 11px;
-            color: #667eea;
-            font-weight: 600;
-            margin-top: 8px;
+        .button-container {
             text-align: center;
         }
         
-        .assessment-panel {
-            background: linear-gradient(135deg, #f0f4ff 0%, #ede7ff 100%);
-            border: 1px solid #d0deff;
+        button {
+            padding: 14px 32px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 15px;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        button:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.4);
+        }
+        
+        button:active:not(:disabled) {
+            transform: translateY(0px);
+        }
+        
+        button:disabled {
+            background: #4a5568;
+            cursor: not-allowed;
+            opacity: 0.5;
+        }
+        
+        .session-complete {
+            text-align: center;
+            padding: 20px;
+            background: rgba(102, 126, 234, 0.1);
+            border: 1px solid rgba(102, 126, 234, 0.3);
+            border-radius: 12px;
+            margin-bottom: 15px;
+            color: #a0aec0;
+            font-weight: 600;
+        }
+        
+        .back-button {
+            width: 100%;
+            padding: 12px 24px;
+            font-size: 14px;
+            margin-top: 10px;
+        }
+        
+        .error-message {
+            background: rgba(255, 107, 107, 0.1);
+            border: 1px solid rgba(255, 107, 107, 0.3);
+            color: #ff6b6b;
+            padding: 12px;
             border-radius: 8px;
-            padding: 15px;
             margin-bottom: 15px;
             font-size: 13px;
         }
         
-        .assessment-header {
-            font-weight: 700;
-            color: #667eea;
-            margin-bottom: 10px;
+        .loading {
+            text-align: center;
+            padding: 30px 20px;
+            color: #a0aec0;
+        }
+        
+        .spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255, 255, 255, 0.1);
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-right: 10px;
+            vertical-align: middle;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* Side Panel Styles */
+        .panel-header {
             font-size: 12px;
+            font-weight: 600;
+            color: #a0aec0;
             text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
         
         .assessment-level {
             display: flex;
-            align-items: center;
-            gap: 15px;
-            margin-bottom: 12px;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 20px;
         }
         
         .level-badge {
-            background: #667eea;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
-            padding: 8px 16px;
-            border-radius: 6px;
+            padding: 12px 16px;
+            border-radius: 10px;
             font-weight: 700;
-            font-size: 16px;
-            min-width: 80px;
+            font-size: 18px;
             text-align: center;
         }
         
         .confidence-bar {
-            flex: 1;
+            width: 100%;
         }
         
         .confidence-label {
             font-size: 11px;
-            color: #666;
-            margin-bottom: 4px;
+            color: #a0aec0;
+            margin-bottom: 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
         
         .confidence-fill {
-            height: 6px;
-            background: #d0deff;
-            border-radius: 3px;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 4px;
             overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
         
         .confidence-fill-inner {
@@ -272,14 +339,16 @@
         }
         
         .assessment-section {
-            margin-top: 10px;
+            margin-top: 15px;
         }
         
         .assessment-label {
             font-weight: 600;
-            color: #333;
+            color: #cbd5e0;
             font-size: 12px;
-            margin-bottom: 6px;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
         
         .evidence-list, .misconceptions-list {
@@ -288,11 +357,11 @@
         }
         
         .evidence-list li, .misconceptions-list li {
-            padding: 4px 0;
-            color: #555;
+            padding: 6px 0 6px 20px;
+            color: #cbd5e0;
             font-size: 12px;
-            padding-left: 16px;
             position: relative;
+            line-height: 1.4;
         }
         
         .evidence-list li:before {
@@ -310,112 +379,97 @@
             color: #ff6b6b;
         }
         
-        .session-complete {
-            text-align: center;
-            padding: 20px;
-            background: #f0f4ff;
-            border: 1px solid #d0deff;
-            border-radius: 8px;
-            margin-bottom: 10px;
-            color: #667eea;
-            font-weight: 600;
-        }
-        
-        .error-message {
-            background: #fff5f5;
-            border: 1px solid #ffd7d7;
-            color: #c92a2a;
+        .turn-info {
+            background: rgba(102, 126, 234, 0.1);
+            border: 1px solid rgba(102, 126, 234, 0.3);
+            border-radius: 10px;
             padding: 12px;
-            border-radius: 6px;
-            margin-bottom: 15px;
-            font-size: 14px;
-        }
-        
-        .loading {
             text-align: center;
-            padding: 20px;
-            color: #999;
-            font-size: 14px;
+            color: #cbd5e0;
+            font-size: 12px;
+            margin-top: auto;
         }
         
-        .spinner {
-            display: inline-block;
-            width: 16px;
-            height: 16px;
-            border: 2px solid #f3f3f3;
-            border-top: 2px solid #667eea;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin-right: 8px;
-            vertical-align: middle;
+        .turn-info strong {
+            color: #a0aec0;
         }
         
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-        
-        .back-link {
-            color: #667eea;
-            text-decoration: none;
-            font-size: 13px;
-            font-weight: 600;
-        }
-        
-        .back-link:hover {
-            text-decoration: underline;
+        @media (max-width: 1024px) {
+            .wrapper {
+                flex-direction: column;
+                height: auto;
+            }
+            
+            .side-panel {
+                width: 100%;
+                max-height: 300px;
+            }
+            
+            .message-content {
+                flex: 0 1 100%;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <header>
-            <h1>Tutoring Session</h1>
-            <div class="header-info">
-                <div>Conv ID: <code id="convIdDisplay" style="font-family: monospace; font-size: 12px;"></code></div>
-                <div>Turn <span id="turnDisplay">0</span>/<span id="maxTurnsDisplay">10</span></div>
-                <div><a href="/" class="back-link">← Back to Catalog</a></div>
-            </div>
-        </header>
-        
-        <div class="message-log" id="messageLog">
-            <div class="loading"><span class="spinner"></span>Loading session...</div>
-        </div>
-        
-        <div class="input-area">
-            <div id="sessionComplete" class="session-complete" style="display: none;">
-                ✓ Session Complete — Max turns reached
-            </div>
-            <div id="errorBox" class="error-message" style="display: none;"></div>
-            
-            <!-- Live Assessment Panel -->
-            <div id="assessmentPanel" class="assessment-panel" style="display: none;">
-                <div class="assessment-header">📊 Live Assessment</div>
-                
-                <div class="assessment-level">
-                    <div class="level-badge" id="levelBadge">3/5</div>
-                    <div class="confidence-bar">
-                        <div class="confidence-label">Confidence</div>
-                        <div class="confidence-fill">
-                            <div class="confidence-fill-inner" id="confidenceFill" style="width: 20%;"></div>
-                        </div>
+    <div class="wrapper">
+        <div class="container">
+            <header>
+                <h1>🎓 Tutoring Session</h1>
+                <div class="header-info">
+                    <div class="header-info-item">
+                        <span>Turn:</span>
+                        <strong><span id="turnDisplay">0</span>/<span id="maxTurnsDisplay">10</span></strong>
                     </div>
                 </div>
+            </header>
+            
+            <div class="message-log" id="messageLog">
+                <div class="loading"><span class="spinner"></span>Loading session...</div>
+            </div>
+            
+            <div class="input-area">
+                <div id="errorBox" class="error-message" style="display: none;"></div>
                 
-                <div class="assessment-section" id="evidenceSection" style="display: none;">
-                    <div class="assessment-label">Evidence</div>
-                    <ul class="evidence-list" id="evidenceList"></ul>
+                <div id="sessionComplete" class="session-complete" style="display: none;">
+                    ✓ Session Complete — Max turns reached
                 </div>
                 
-                <div class="assessment-section" id="misconceptionsSection" style="display: none;">
-                    <div class="assessment-label">Misconceptions</div>
-                    <ul class="misconceptions-list" id="misconceptionsList"></ul>
+                <div class="button-container">
+                    <button id="autoTutorBtn" onclick="autoTutor()" disabled>🤖 Auto Tutor</button>
+                    <button id="backButton" class="back-button" onclick="window.location.href = '/';" style="display: none;">← Back to Catalog</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Side Panel Assessment -->
+        <div class="side-panel" id="assessmentPanel" style="display: none;">
+            <div class="panel-header">📊 Live Assessment</div>
+            
+            <div class="assessment-level">
+                <div class="level-badge" id="levelBadge">3/5</div>
+                <div class="confidence-bar">
+                    <div class="confidence-label">Confidence</div>
+                    <div class="confidence-fill">
+                        <div class="confidence-fill-inner" id="confidenceFill" style="width: 20%;"></div>
+                    </div>
                 </div>
             </div>
             
-            <div style="text-align: center;">
-                <button id="autoTutorBtn" onclick="autoTutor()" style="padding: 14px 32px; font-size: 16px;">🤖 Auto Tutor</button>
+            <div class="assessment-section" id="evidenceSection" style="display: none;">
+                <div class="assessment-label">Evidence</div>
+                <ul class="evidence-list" id="evidenceList"></ul>
             </div>
+            
+            <div class="assessment-section" id="misconceptionsSection" style="display: none;">
+                <div class="assessment-label">Misconceptions</div>
+                <ul class="misconceptions-list" id="misconceptionsList"></ul>
+            </div>
+            
+            <div class="turn-info">
+                <strong id="turnInfo">Turn 0/10</strong>
+            </div>
+        </div>
     </div>
     
     <script>
@@ -426,6 +480,8 @@
         let messages = [];
         let subjectName = "";
         let topicName = "";
+        let studentId = "";
+        let topicId = "";
         
         // Parse URL parameters
         function getQueryParam(name) {
@@ -439,20 +495,22 @@
             maxTurns = parseInt(getQueryParam("max_turns")) || 10;
             subjectName = getQueryParam("subject_name") || "Subject";
             topicName = getQueryParam("topic_name") || "Topic";
+            studentId = getQueryParam("student_id") || "";
+            topicId = getQueryParam("topic_id") || "";
             
             if (!conversationId) {
                 showError("No conversation ID provided");
                 return;
             }
             
-            document.getElementById("convIdDisplay").textContent = conversationId.substring(0, 12) + "...";
             document.getElementById("maxTurnsDisplay").textContent = maxTurns;
             document.getElementById("turnDisplay").textContent = currentTurn;
+            document.getElementById("turnInfo").textContent = `Turn ${currentTurn}/${maxTurns}`;
             
             // Session started, enable auto tutor button
             document.getElementById("autoTutorBtn").disabled = false;
-            document.getElementById("assessmentPanel").style.display = "block";
-            document.getElementById("messageLog").innerHTML = '<div style="text-align: center; padding: 20px; color: #999;">Starting automatic conversation...</div>';
+            document.getElementById("assessmentPanel").style.display = "flex";
+            document.getElementById("messageLog").innerHTML = '<div style="text-align: center; padding: 20px; color: #a0aec0;">Starting automatic conversation...</div>';
             
             // Start automatic tutor conversation
             setTimeout(startAutoConversation, 500);
@@ -461,7 +519,7 @@
         function updateAssessmentUI(assessment) {
             if (!assessment) return;
             
-            const level = assessment.predicted_level || 3;
+            const level = assessment.level || 3;
             const confidence = (assessment.confidence || 0) * 100;
             const evidence = assessment.evidence || [];
             const misconceptions = assessment.misconceptions || [];
@@ -479,7 +537,14 @@
                 evidenceSection.style.display = "block";
                 evidenceList.innerHTML = evidence
                     .slice(0, 5)
-                    .map(e => `<li>${escapeHtml(e)}</li>`)
+                    .map(e => {
+                        // Handle new format: {quote, reason} objects
+                        if (typeof e === 'object' && e.quote) {
+                            return `<li><strong>"${escapeHtml(e.quote)}"</strong> - ${escapeHtml(e.reason)}</li>`;
+                        }
+                        // Handle old format: just strings
+                        return `<li>${escapeHtml(e)}</li>`;
+                    })
                     .join("");
             } else {
                 evidenceSection.style.display = "none";
@@ -529,7 +594,7 @@
         async function autoTutor() {
             if (isComplete || currentTurn >= maxTurns) {
                 if (!isAutoRunning) {
-                    alert("Session is complete");
+                    showError("Session is complete");
                 }
                 return;
             }
@@ -585,6 +650,7 @@
                 // Update turn
                 currentTurn = msgData.turn_number;
                 document.getElementById("turnDisplay").textContent = currentTurn;
+                document.getElementById("turnInfo").textContent = `Turn ${currentTurn}/${maxTurns}`;
                 
                 // Update assessment from response
                 if (msgData.assessment) {
@@ -597,12 +663,15 @@
                     btn.disabled = true;
                     btn.textContent = "🤖 Auto Tutor";
                     
-                    // Redirect to results page after small delay to show final message
+                    // Show session complete and back button
+                    document.getElementById("sessionComplete").style.display = "block";
+                    document.getElementById("backButton").style.display = "block";
+                    
+                    // Redirect to results page after 3 seconds
                     setTimeout(() => {
                         const resultsUrl = buildResultsUrl();
                         window.location.href = resultsUrl;
-                    }, 300);
-                    document.getElementById("sessionComplete").style.display = "block";
+                    }, 3000);
                 } else {
                     btn.disabled = false;
                     btn.textContent = "🤖 Auto Tutor";
@@ -628,12 +697,18 @@
             const messageDiv = document.createElement("div");
             messageDiv.className = `message ${role}`;
             
-            let label = role === "tutor" ? "You (Tutor)" : role === "student" ? "Student" : "Error";
-            let html = `<div class="message-label">${label}</div>`;
-            html += `<div class="message-bubble">${escapeHtml(text)}</div>`;
+            let avatar = role === "tutor" ? "🤖" : role === "student" ? "👤" : "⚠️";
+            
+            let html = `<div class="message-avatar">${avatar}</div>`;
+            html += `<div class="message-content"><div class="message-bubble">${escapeHtml(text)}</div></div>`;
             
             messageDiv.innerHTML = html;
             messageLog.appendChild(messageDiv);
+            
+            // Rerender MathJax for any new formulas in the message
+            if (window.MathJax && window.MathJax.typesetPromise) {
+                window.MathJax.typesetPromise([messageDiv]).catch(err => console.log("MathJax render error:", err));
+            }
             
             // Auto-scroll to bottom
             messageLog.scrollTop = messageLog.scrollHeight;
